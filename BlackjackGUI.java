@@ -165,139 +165,145 @@ public class BlackjackGUI extends JPanel {
                 staybutton.setEnabled(false);
                 dealbutton.setEnabled(false);
                 playagainbutton.setEnabled(true);
-                winlosebox.setText("BlackJack");
+                if (dealer.isBlackjack() && player.isBlackjack()) {
+                    winlosebox.setText("You and dealer both have a Blackjack! Tie.");
+                } else if (dealer.isBlackjack()) {
+                    winlosebox.setText("Dealer has a Blackjack! You lost.");
+                } else if (player.isBlackjack()) {
+                    winlosebox.setText("Player has a Blackjack! Player won.");
+                }
+
+                add(dcardPanel, BorderLayout.CENTER);
+                add(pcardPanel, BorderLayout.SOUTH);
+
             }
-
-            add(dcardPanel, BorderLayout.CENTER);
-            add(pcardPanel, BorderLayout.SOUTH);
-
         }
     }//end dealbutton
 
-    /*************************************************************
-     HitButton
-     every time the player wants another card
-     until hand value is over 21.
-     Hit button pressed
-     *************************************************************/
-    class hitbutton implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
+        /*************************************************************
+         HitButton
+         every time the player wants another card
+         until hand value is over 21.
+         Hit button pressed
+         *************************************************************/
+        class hitbutton implements ActionListener {
+            public void actionPerformed(ActionEvent e) {
 
 
-            Card hitcard = deck.nextCard();
-            player.addCard(hitcard);
-            playercardhit = new JLabel(hitcard.getimage());
-            pcardPanel.add(playercardhit);
-            pcardPanel.repaint();
+                Card hitcard = deck.nextCard();
+                player.addCard(hitcard);
+                playercardhit = new JLabel(hitcard.getimage());
+                pcardPanel.add(playercardhit);
+                pcardPanel.repaint();
 
-            int playerPoints = player.getTotalPoints();
-            if (playerPoints > 21) {
-                winlosebox.setText("Player Bust!");
+                int playerPoints = player.getTotalPoints();
+                if (playerPoints > 21) {
+                    winlosebox.setText("Player Bust!");
+                    hitbutton.setEnabled(false);
+                    dealbutton.setEnabled(false);
+                    staybutton.setEnabled(false);
+                    playagainbutton.setEnabled(true);
+                } else if (playerPoints == 21) {
+                    winlosebox.setText("Player Won!");
+                    hitbutton.setEnabled(false);
+                    dealbutton.setEnabled(false);
+                    staybutton.setEnabled(false);
+                    playagainbutton.setEnabled(true);
+                }
+
+                playerlabel.setText(" Player Points: " + playerPoints);
+
+            }
+        }//end hitbutton
+
+        /*************************************************************
+         StayButton
+         dealer must hit on 16 or lower. determines the winner,
+         player wins if under 21 and above dealer.
+         Tie goes to dealer.
+         Stay button pressed
+         *************************************************************/
+        class staybutton implements ActionListener {
+            public void actionPerformed(ActionEvent e) {
+
+                game.dealersTurn();
+                dcardPanel.removeAll();
+                dcardPanel.add(dealerlabel);
+                dealerlabel.setText(" " + dealerlabel.getText());
+
+                //get cards and re-display and show the face-down card of dealer
+                Card dhitcard = deck.nextCard();
+                dealer.addCard(dhitcard);
+                dealercardhit = new JLabel(dhitcard.getimage());
+                dealercard1 = new JLabel(dealer.getHand().getCard(0).getimage());
+                dealercard2 = new JLabel(dealer.getHand().getCard(1).getimage());
+                dcardPanel.add(dealercard1);
+                dcardPanel.add(dealercard2);
+                dcardPanel.add(dealercardhit);
+
+                dealerlabel.setText(" Dealer Points: " + dealer.getTotalPoints());
+                playerlabel.setText(" Player Points: " + player.getTotalPoints());
+
+                int userPoints = player.getTotalPoints();
+                int dealerPoints = dealer.getTotalPoints();
+                if (userPoints > 21) {
+                    winlosebox.setText("Player lost! Player has " + userPoints + " points and has busted.");
+                } else if (dealerPoints > 21) {
+                    winlosebox.setText("Player won! Dealer has " + dealerPoints + " points and has busted.");
+                } else if (dealerPoints > userPoints) {
+                    winlosebox.setText("Player lost! Dealer has " + dealerPoints + " points and player has " + userPoints + " points.");
+                } else if (dealerPoints == userPoints) {
+                    winlosebox.setText("Tie! Player and dealer both have " + userPoints + " points.");
+                } else {
+                    winlosebox.setText("Player won! Dealer has " + dealerPoints + " points and player has " + userPoints + " points.");
+                }
                 hitbutton.setEnabled(false);
-                dealbutton.setEnabled(false);
                 staybutton.setEnabled(false);
+
                 playagainbutton.setEnabled(true);
-            } else if (playerPoints == 21) {
-                winlosebox.setText("Player Won!");
+
+            }
+        }//end staybutton
+
+        /*************************************************************
+         PlayAgainButton
+         resets screen
+         Play Again button pressed
+         *************************************************************/
+        class playagainbutton implements ActionListener {
+            public void actionPerformed(ActionEvent e) {
+                dcardPanel.removeAll();
+                pcardPanel.removeAll();
+                dcardPanel.add(dealerlabel);
+                pcardPanel.add(playerlabel);
+                dealerlabel.setText(" Dealer: ");
+                playerlabel.setText(" Player: ");
+                winlosebox.setText("");
+                dealer = new Dealer();
+                player = new Player();
+                game = new BlackjackGame();
+
                 hitbutton.setEnabled(false);
-                dealbutton.setEnabled(false);
                 staybutton.setEnabled(false);
-                playagainbutton.setEnabled(true);
+                playagainbutton.setEnabled(false);
+                dealbutton.setEnabled(true);
+
+            }
+        }//end playagainbutton
+
+        /*************************************************************
+         HelpButton
+         display instructions
+         *************************************************************/
+        class helpbutton implements ActionListener {
+            public void actionPerformed(ActionEvent e) {
+                String instructions = BlackjackGame.Instruction();
+                Component palette = new Component() {
+                };
+                JOptionPane.showInternalMessageDialog(palette, instructions,
+                        "QUICK&EASY BLACKJACK HELP",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
 
-            playerlabel.setText(" Player Points: " + playerPoints);
-
-        }
-    }//end hitbutton
-
-    /*************************************************************
-     StayButton
-     dealer must hit on 16 or lower. determines the winner,
-     player wins if under 21 and above dealer.
-     Tie goes to dealer.
-     Stay button pressed
-     *************************************************************/
-    class staybutton implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-
-            game.dealersTurn();
-            dcardPanel.removeAll();
-            dcardPanel.add(dealerlabel);
-            dealerlabel.setText(" " + dealerlabel.getText());
-
-            //get cards and re-display and show the face-down card of dealer
-            Card dhitcard = deck.nextCard();
-            dealer.addCard(dhitcard);
-            dealercardhit = new JLabel(dhitcard.getimage());
-            dealercard1 = new JLabel(dealer.getHand().getCard(0).getimage());
-            dealercard2 = new JLabel(dealer.getHand().getCard(1).getimage());
-            dcardPanel.add(dealercard1);
-            dcardPanel.add(dealercard2);
-            dcardPanel.add(dealercardhit);
-
-            dealerlabel.setText(" Dealer Points: " + dealer.getTotalPoints());
-            playerlabel.setText(" Player Points: " + player.getTotalPoints());
-
-            int userPoints = player.getTotalPoints();
-            int dealerPoints = dealer.getTotalPoints();
-            if (userPoints > 21) {
-                winlosebox.setText("Player lost! Player has " + userPoints + " points and has busted.");
-            } else if (dealerPoints > 21) {
-                winlosebox.setText("Player won! Dealer has " + dealerPoints + " points and has busted.");
-            } else if (dealerPoints > userPoints) {
-                winlosebox.setText("Player lost! Dealer has " + dealerPoints + " points and player has " + userPoints + " points.");
-            } else if (dealerPoints == userPoints) {
-                winlosebox.setText("Tie! Player and dealer both have " + userPoints + " points.");
-            } else {
-                winlosebox.setText("Player won! Dealer has " + dealerPoints + " points and player has " + userPoints + " points.");
-            }
-            hitbutton.setEnabled(false);
-            staybutton.setEnabled(false);
-
-            playagainbutton.setEnabled(true);
-
-        }
-    }//end staybutton
-
-    /*************************************************************
-     PlayAgainButton
-     resets screen
-     Play Again button pressed
-     *************************************************************/
-    class playagainbutton implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            dcardPanel.removeAll();
-            pcardPanel.removeAll();
-            dcardPanel.add(dealerlabel);
-            pcardPanel.add(playerlabel);
-            dealerlabel.setText(" Dealer: ");
-            playerlabel.setText(" Player: ");
-            winlosebox.setText("");
-            dealer = new Dealer();
-            player = new Player();
-            game = new BlackjackGame();
-
-            hitbutton.setEnabled(false);
-            staybutton.setEnabled(false);
-            playagainbutton.setEnabled(false);
-            dealbutton.setEnabled(true);
-
-        }
-    }//end playagainbutton
-
-    /*************************************************************
-     HelpButton
-     display instructions
-     *************************************************************/
-    class helpbutton implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            String instructions = BlackjackGame.Instruction();
-            Component palette = new Component() {
-            };
-            JOptionPane.showInternalMessageDialog(palette, instructions,
-                    "QUICK&EASY BLACKJACK HELP",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
-
-    }//end helpbutton
-}//end BlackjackGUI
+        }//end helpbutton
+    }//end BlackjackGUI
