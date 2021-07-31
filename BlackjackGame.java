@@ -16,7 +16,7 @@ public class BlackjackGame {
      * Constructs a BlackjackGame object with all the game settings reset to initial status.
      */
     public BlackjackGame() {
-        printInstruction();
+        // printInstruction();
         resetGame();
     }
 
@@ -36,31 +36,33 @@ public class BlackjackGame {
     /**
      * Prints game instructions.
      */
-    public static void printInstruction() {
-        System.out.println("Welcome to the Blackjack Game!");
-        System.out.println("---------------------------------------");
-        System.out.println("You will play against the house.");
-        System.out.println("The goal is to get as close to 21 points as possible, without exceeding 21.");
-        System.out.println("You will be dealt 2 cards. The dealer is dealt with 2 cards, one face-up and one face-down.");
-        System.out.println("Face cards are worth 10, while Ace is worth 1 or 11, whichever makes a better hand.");
-        System.out.println("You can ask for another card by choosing Hit or hold your total and end your turn by choosing Stand.");
-        System.out.println("If you go over 21, you bust. The dealer wins regardless of the dealer's hand.");
-        System.out.println("Dealer hits until his/her hand is 17 points or more.");
-        System.out.println("---------------------------------------");
+    public static String Instruction() {
+        return "Welcome to the Blackjack Game!" +
+
+                "\n---------------------------------------" +
+                "\nYou will play against the house." +
+                "\nThe goal is to get as close to 21 points as possible, without exceeding 21." +
+                "\nYou will be dealt 2 cards. The dealer is dealt with 2 cards, one face-up and one face-down." +
+                "\nFace cards are worth 10, while Ace is worth 1 or 11, whichever makes a better hand." +
+                "\nYou can ask for another card by choosing Hit or hold your total and end your turn by choosing Stand." +
+                "\nIf you go over 21, you bust. The dealer wins regardless of the dealer's hand." +
+                "\nDealer hits until his/her hand is 17 points or more." +
+                "\n---------------------------------------";
     }
 
     /**
      * Deals two cards to human-controlled player and computer-controlled dealer.
+     * this method is disabled when implementing GUI
      */
-    public void dealCards() {
-        // deal user's cards
-        user.addCard(deck.nextCard());
-        user.addCard(deck.nextCard());
-
-        // deal house's cards
-        house.addCard(deck.nextCard());
-        house.addCard(deck.nextCard());
-    }
+//    public void dealCards() {
+//        // deal user's cards
+//        user.addCard(deck.nextCard());
+//        user.addCard(deck.nextCard());
+//
+//        // deal house's cards
+//        house.addCard(deck.nextCard());
+//        house.addCard(deck.nextCard());
+//    }
 
     /**
      * Checks if the two players get a Blackjack in the beginning.
@@ -181,36 +183,37 @@ public class BlackjackGame {
         }
     }
 
-    public static void main(String[] args) {
-        BlackjackGame game = new BlackjackGame();
-
-       do {
-            // reset game
-            game.resetGame();
-
-            // initial deal
-            game.dealCards();
-
-            // print out current status
-            game.printStatus();
-
-            // check for Blackjack
-            if (game.ifBlackjack()) {
-                continue;
-            }
-
-            // user plays first
-            game.usersTurn();
-
-            // deal plays
-            game.dealersTurn();
-
-            // print out final results
-            game.printResults();
-
-            // ask if user wants to play again
-        } while (game.playAgain());
-
-    }
+//    -- main method to test before implementing GUI --
+//    public static void main(String[] args) {
+//        BlackjackGame game = new BlackjackGame();
+//
+//       do {
+//            // reset game
+//            game.resetGame();
+//
+//            // initial deal
+//            game.dealCards();
+//
+//            // print out current status
+//            game.printStatus();
+//
+//            // check for Blackjack
+//            if (game.ifBlackjack()) {
+//                continue;
+//            }
+//
+//            // user plays first
+//            game.usersTurn();
+//
+//            // deal plays
+//            game.dealersTurn();
+//
+//            // print out final results
+//            game.printResults();
+//
+//            // ask if user wants to play again
+//        } while (game.playAgain());
+//
+//    }
 
 }

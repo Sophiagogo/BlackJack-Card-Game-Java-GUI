@@ -1,5 +1,7 @@
 package Presentaion.CardGame;
 
+import javax.swing.*;
+
 /**
  * The Card class that stores the suit (e.g., Clubs, Diamonds, Hearts, Spades)
  * and name (e.g., Ace, 2, 10, Jack) of each card
@@ -84,6 +86,18 @@ public class Card implements java.lang.Comparable<Object> {
         return point + " of " + suit;
     }
 
+    /**
+     * Return image of Card.
+     *
+     * @return
+     */
+    public ImageIcon getimage() {
+        ImageIcon cardIcon = new ImageIcon(
+                "/Users/sophiafan/Documents/Spring 2021/CS 5004 Java/hw/hw/src/Presentaion/CardGame/Presentaion/CardGame/images/" + this.getPointByName() + "_" + this.getSuit() + ".png");
+
+        return cardIcon;
+
+    }
 
     /**
      * Override the compareTo method that to compare two card by name.
@@ -99,5 +113,4 @@ public class Card implements java.lang.Comparable<Object> {
         Card card = (Card) object;
         return getPointByName() - card.getPointByName();
     }
-
 }
